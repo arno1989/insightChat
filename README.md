@@ -1,0 +1,4 @@
+insightChat
+===========
+
+Chat functionality
