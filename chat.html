@@ -1,0 +1,29 @@
+<head>
+  <title>chat</title>
+</head>
+
+<body>
+  {{> chatroom}}
+</body>
+
+<template name="chatroom">
+	<legend><h5>Chatroom</h5></legend>
+	<div class="containter-fluid">
+		<div class="chat" style="height: 100%; overflow: auto;">
+			{{#each msgs}}
+			<p><small>{{passTime date}}</small><i class="text-info"> {{owner}}</i>: {{msg}}</p>
+			{{/each}}
+		</div>
+		{{#constant}}
+		<div>
+			<table>
+				<tr><td width="100%">
+            <textarea rows="2" type="text" class="msg" ></textarea></td>
+            <td span="2"><button class="msg-send btn btn-small">
+                Send
+            </button></td></tr>
+        </table>
+        </div>
+        {{/constant}}
+	</div>
+</template>
