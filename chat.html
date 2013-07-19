@@ -9,7 +9,7 @@
 <template name="chatroom">
 	<legend><h5>Chatroom</h5></legend>
 	<div class="containter-fluid">
-		<div class="chat" style="height: 100%; overflow: auto;">
+		<div class="chat" style="height: 300px; overflow: auto;">
 			{{#each msgs}}
 			<p><small>{{passTime date}}</small><i class="text-info"> {{owner}}</i>: {{msg}}</p>
 			{{/each}}
