@@ -1,4 +1,0 @@
-insightChat
-===========
-
-Chat functionality
