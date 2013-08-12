@@ -1,0 +1,46 @@
+<head>
+  <title>chat</title>
+</head>
+
+<body>
+	<header>
+		{{> navigation}}
+	</header>
+	{{> mainContainer}}
+</body>
+
+<template name="mainContainer">
+	<div class="container">
+		{{#if currentUser}}
+			<!-- Valid login -->
+			{{getUserInfo}}
+			{{renderPage}}
+		{{else}}
+			<!-- Not loggid in! -->
+			{{> login}}
+		{{/if}}
+	</div>
+</template>
+
+<template name="navigation">
+	<div class="navbar">
+		<a class="navbar-brand" href="#">insightChat</a>
+		<ul class="nav navbar-nav">
+			<li>{{loginButtons}}</li>
+			<li>
+				{{#if currentUser}}
+				 <b>Sleutel: {{getToken}}</b>
+				{{/if}}
+			</li>
+		</ul>
+	</div>
+</template>
+
+<template name="login">
+	<div class="container">
+		<div class="well well-large">
+			<h3>Login om door te gaan</h3>
+		</div> <!-- /. div well well-large -->
+	</div> <!-- /. div container -->
+</template>
+

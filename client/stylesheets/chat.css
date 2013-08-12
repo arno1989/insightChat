@@ -1,0 +1,24 @@
+/* CSS declarations go here */
+.modal, .modal.fade.in, .modal.body {
+    top: 10%; /* was 10% */
+    left: 50%;
+    max-height: 400px;
+    overflow: inherit;
+}
+
+/* Chatroom style */
+#chat {
+	border: 2px;
+	height: 50px;
+	padding-right: 8px;
+	padding-bottom: 8px;
+	overflow: auto;
+}
+
+.msg {
+	width: 100%;
+}
+
+.navbar {
+	padding-top: 10px;
+}

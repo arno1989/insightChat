@@ -1,5 +1,9 @@
 {
   "packages": {
-    "bootstrap-3": {}
+    "bootstrap-3": {},
+    "router": {},
+    "linkedin": {},
+    "accounts-linkedin": {},
+    "momentjs": {}
   }
 }

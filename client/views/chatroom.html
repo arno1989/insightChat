@@ -1,0 +1,95 @@
+<template name="chatroom">
+	<div id="chatroom">
+		<div class="well well-large">
+		{{#unless show}}
+			{{> conversations}}
+		{{else}}
+			{{> conversation}}
+		{{/unless}}
+		</div> <!-- /. well well-large -->
+	</div> <!-- /. chatroom -->
+</template>
+
+<template name="conversations">
+	<table width="100%" cellpadding="5">
+		<tr>
+			<td width="90%"><legend>Gesprekken</legend></td>
+			<td width="10%" style="vertical-align: top;"><button class="newConv btn"><i class="icon-comment"></i> Nieuw</button></td>
+		</tr>
+	</table>
+	<div class="list-group">
+		{{#each getActiveConv}}
+			<a href="" id="{{_id}}" class="list-group-item conv"><H5>{{getConvName}}<br><small>{{msg}} - {{name}}</small></H5></a>
+		{{/each}}
+	</div>
+
+	<!-- Modal -->
+	<div id="newConvModal" class="modal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Nieuw gesprek</h3>
+		</div>
+		<div class="modal-body">
+			<div class="list-group">
+				<!-- zit geen database collectie achter -->
+				{{#each getUsers}}
+					<a href="" id="{{_id}}" class="list-group-item startNewConv"><b>{{name}}</b></a>
+				{{/each}}
+			</div>			
+		</div>
+	</div> <!-- /. Modal -->
+</template>
+
+<template name="conversation">
+	<div id="messContainer" height="100%" class="containter-fluid">
+		<legend>{{getConvName}}</legend>
+		{{> chatMessages}}
+	</div>
+
+	{{#constant}}
+	<div class="msgCommands">
+		<table cellpadding="10">
+			<tr>
+				<td width="10%">
+					<button class="ret btn btn-large"><i class="icon-chevron-left"></i> Terug</button>
+				</td>
+				<td width="80%">
+        			<textarea rows="2" type="text" class="msg"></textarea>
+    			</td>
+        		<td width="10%">
+        			<button class="msg-send btn btn-large"><i class="icon-pencil"></i> Verzend</button>
+        		</td>
+        	</tr>
+        </table>
+    </div> <!-- /. msgCommands -->
+    {{/constant}}
+</template>
+
+<template name="chatMessages">
+	<div class="chat" style="height: 300px; overflow: auto;">
+
+		{{#each msgs}}
+		{{#if dateBarCheck date}}
+			<table class="table" width="100%">
+				<tr class="success">
+					<td style="text-align: center"><small><b>{{getDateBar date}}</b></small></td>
+				</tr>
+			</table>
+		{{/if}}
+		<table class="table" style="padding: 2px" width="100%">
+			<tr class="info">
+				<td style="vertical-align: top;">
+					<small>{{passTime date}}</small><br>
+					{{#if getDelButton owner}}
+						<a href=""><i id="{{_id}}" class="icon-trash"></i></a>
+					{{/if}}
+				</td>
+				<td width="90%">
+					{{msg}}<br>
+					<small><i class="muted"> - {{name}}</i></small>
+				</td>
+			</tr>
+		</table>
+		{{/each}}
+	</div>
+</template>
