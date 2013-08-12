@@ -50,10 +50,7 @@ Template.conversations.getConvName=function() {
 Template.conversations.getUsers=function() {
   if(bargeSubHandler && bargeSubHandler.ready()) {
     // Dont return my own ID
-    console.log('getting users');
     return bargeUsers.find({accessID: { $not: Meteor.userId()}});
-  }else{
-    console.log('subhandlers not rdy!');
   }
 }
 
@@ -62,6 +59,7 @@ Template.conversations.events({
     showConv = true;      // Show the conversation on rerender
     chatOwner = this.owner;   // Set chat owner
     chatRecv = this.receiver; // Set the chat receiver
+    console.log('owner: ' + chatOwner + ' Recv: ' + chatRecv);
     $('#chatroom').html(Meteor.render(Template.chatroom)); // Rerender template
   },
   'click .newConv': function() {
@@ -155,12 +153,16 @@ Template.conversation.events({
  * This function returns the chat messages for the current selected user
  **/
 Template.chatMessages.msgs=function() {
-  return chatCollection.find(
-      { $or: [
-          {$and: [{owner: chatOwner}, {receiver: chatRecv}]},
-          {$and: [{owner: chatRecv}, {receiver: chatOwner}]}
-          ]
-      },{sort: {date: -1}});
+  if(chatRecv == "Global") {
+    return chatCollection.find({receiver: chatRecv},{sort: {date: -1}});
+  } else {
+    return chatCollection.find(
+        { $or: [
+            {$and: [{owner: chatOwner}, {receiver: chatRecv}]},
+            {$and: [{owner: chatRecv}, {receiver: chatOwner}]}
+            ]
+        },{sort: {date: -1}});
+  }
 }
 
 Template.chatMessages.passTime=function(timestamp) {
@@ -183,8 +185,8 @@ Template.chatMessages.dateBarCheck=function(timestamp) {
   msgTime = new Date(timestamp);
   currentTime = new Date();
 
-  console.log('msgTime: ' + msgTime.getDate() + ' - ' + 'day: ' + day);
-  console.log('msgTime: ' + (msgTime.getMonth()+1) + ' - ' + 'month: ' +  month);
+  //console.log('msgTime: ' + msgTime.getDate() + ' - ' + 'day: ' + day);
+  //console.log('msgTime: ' + (msgTime.getMonth()+1) + ' - ' + 'month: ' +  month);
 
   if(msgTime.getFullYear() < year || msgTime.getFullYear() > year) {
     return true;
@@ -228,13 +230,17 @@ function sendMsg() {
     });
     // Check if this conversation already exists
     console.log('Receiver is: ' + chatRecv);
-    var exist = conversationsCol.find(
-        { $or: [{$and: [{owner: Meteor.userId()}, {receiver: chatRecv}]},
-            {$and: [{owner: chatRecv}, {receiver: Meteor.userId()}]}
-            ]
-        }).count();
-
-    if( exist == 0) {
+    var exist;
+    if(chatRecv == "Global") {
+      exist = conversationsCol.find({receiver: chatRecv},{sort: {date: -1}});
+    } else {
+      exist = conversationsCol.find(
+          { $or: [{$and: [{owner: Meteor.userId()}, {receiver: chatRecv}]},
+              {$and: [{owner: chatRecv}, {receiver: Meteor.userId()}]}
+              ]
+          }).count();
+    }
+    if(exist == 0) {
       // No active conversation yet! Insert into DB
       conversationsCol.insert({
         msg: msgVal,
@@ -245,13 +251,19 @@ function sendMsg() {
       });
     } else {
       // There is already a conversation, update latest message
-      var found = conversationsCol.findOne(
-        { $or: [
-            {$and: [{owner: Meteor.userId()}, {receiver: chatRecv}]},
-            {$and: [{owner: chatRecv}, {receiver: Meteor.userId()}]}
-            ]
-        }
-      );
+      var found;
+      if(chatRecv == "Global") {
+        found = conversationsCol.findOne({receiver: chatRecv});
+      } else {
+        found = conversationsCol.findOne(
+          { $or: [
+              {$and: [{owner: Meteor.userId()}, {receiver: chatRecv}]},
+              {$and: [{owner: chatRecv}, {receiver: Meteor.userId()}]}
+              ]
+          }
+        );
+      }
+      console.log(found);
       conversationsCol.update({_id: found._id}, {$set: {
         msg: msgVal,
         date: timestamp,
